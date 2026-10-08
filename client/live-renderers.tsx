@@ -596,9 +596,6 @@ export function LiveToolCallRenderer({
     });
   }, [hubData, agentId]);
 
-  // Collapse completed tools by default; expand active or failed tools
-  const isExpanded = data.status === "running" || data.status === "failed";
-
   // The daemon side owns the shell, so revealing a file is one RPC. A path the
   // daemon cannot stat answers with an error the press simply ignores.
   const handleRevealPath = useCallback(
@@ -620,7 +617,7 @@ export function LiveToolCallRenderer({
       <ToolCallout
         data={calloutData}
         tokens={tokens}
-        defaultExpanded={isExpanded}
+        defaultExpanded={false}
         onRevealPath={handleRevealPath}
         imageFile={imageFile}
       />
