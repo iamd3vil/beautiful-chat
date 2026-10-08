@@ -45,6 +45,8 @@ export interface EnhancerPreferences {
   assistantMarkdown: boolean;
   /** Which look the markdown renderer uses. */
   markdownVariant: MarkdownVariantPreference;
+  /** Fold a finished turn's work under one "Worked for" row. */
+  foldTurns: boolean;
 }
 
 const STORAGE_KEY = "paseo/beautiful-chat/preferences/v1";
@@ -59,6 +61,7 @@ export const DEFAULT_PREFERENCES: Readonly<EnhancerPreferences> = {
   selectionActions: true,
   assistantMarkdown: true,
   markdownVariant: "document",
+  foldTurns: true,
 };
 
 const listeners = new Set<() => void>();
@@ -105,6 +108,8 @@ function loadPreferences(): EnhancerPreferences {
         candidate.markdownVariant === "compact" || candidate.markdownVariant === "terminal"
           ? candidate.markdownVariant
           : DEFAULT_PREFERENCES.markdownVariant,
+      foldTurns:
+        typeof candidate.foldTurns === "boolean" ? candidate.foldTurns : DEFAULT_PREFERENCES.foldTurns,
     };
   } catch {
     return { ...DEFAULT_PREFERENCES };

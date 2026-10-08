@@ -17,6 +17,13 @@ import {
   LiveNoticeRenderer,
   LiveAssistantRenderer,
 } from "./client/live-renderers";
+import { withTurnFold } from "./client/turn-fold-renderers";
+import { installFoldStyle } from "./client/components/fold-style";
+
+const FoldedToolCall = withTurnFold("tool", LiveToolCallRenderer);
+const FoldedReasoning = withTurnFold("reasoning", LiveReasoningRenderer);
+const FoldedTodo = withTurnFold("todo", LiveTodoRenderer);
+const FoldedAssistant = withTurnFold("reply", LiveAssistantRenderer);
 
 type JsonValue = boolean | null | number | string | JsonValue[] | { [key: string]: JsonValue };
 
@@ -34,6 +41,7 @@ export default function contribute(client: PluginClientContext) {
   const removeNoticeStyle = installHostNoticeStyle();
   // Paseo's Ctrl+F cannot reveal rows this plugin draws; this bar can.
   const removeChatFind = installChatFind();
+  const removeFoldStyle = installFoldStyle();
 
   // Configuration lives in the host Settings area. The plugin has no showcase
   // surface, panels, or Command Center item.
@@ -81,7 +89,7 @@ export default function contribute(client: PluginClientContext) {
       error: z.string().nullable().optional(),
       phase: z.string().optional(),
     }),
-    Component: LiveToolCallRenderer,
+    Component: FoldedToolCall,
   });
 
   const removeReasoningTransformer = client.addTimelineTransformer({
@@ -112,7 +120,7 @@ export default function contribute(client: PluginClientContext) {
       text: z.string(),
       phase: z.string().optional(),
     }),
-    Component: LiveReasoningRenderer,
+    Component: FoldedReasoning,
   });
 
   const removeTodoTransformer = client.addTimelineTransformer({
@@ -143,7 +151,7 @@ export default function contribute(client: PluginClientContext) {
       items: z.array(z.record(z.string(), z.unknown())),
       phase: z.string().optional(),
     }),
-    Component: LiveTodoRenderer,
+    Component: FoldedTodo,
   });
 
   const removeUserTransformer = client.addTimelineTransformer({
@@ -217,7 +225,7 @@ export default function contribute(client: PluginClientContext) {
     kind: "omp-assistant",
     version: 1,
     schema: z.object({ text: z.string() }),
-    Component: LiveAssistantRenderer,
+    Component: FoldedAssistant,
   });
 
   // Only `error` is intercepted here. Paseo 0.8 accepts transformers for
@@ -264,6 +272,7 @@ export default function contribute(client: PluginClientContext) {
     removeGlow();
     removeNoticeStyle();
     removeChatFind();
+    removeFoldStyle();
     removeToolTransformer();
     removeToolRenderer();
     removeReasoningTransformer();

@@ -346,6 +346,14 @@ export function BeautifulChatSettingsPage({ theme }: PluginSurfaceProps) {
         />
 
         <ToggleRow
+          title="Fold finished turns"
+          description="Once a turn ends, its tool calls, reasoning and progress notes fold into one Worked for row, leaving your prompt and the final reply. A running turn stays open. Progress notes only fold while Assistant markdown is on, since Paseo draws them otherwise."
+          value={preferences.foldTurns}
+          onChange={(foldTurns) => updateEnhancerPreferences({ foldTurns })}
+          tokens={tokens}
+        />
+
+        <ToggleRow
           title="Assistant markdown"
           description="Draws the reply with the plugin's own headings, lists and syntax-highlighted code blocks. The plugin cannot reach Paseo's markdown pipeline, so its version is a subset: turn this off for mermaid diagrams, images, and the host's file-path links."
           value={preferences.assistantMarkdown}
